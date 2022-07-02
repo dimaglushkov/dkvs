@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package rpc;
+option go_package="../rpc";
+
+message Key {
+  string key = 1;
+}
+
+message KeyValue {
+  string key = 1;
+  string value = 2;
+}
+
+//TODO: think of the better format for this communication
+message Response {
+  string key = 1;
+  string value = 2;
+  string msg = 3;
+}
+
+service Storage {
+  rpc Get(Key) returns (Response) {}
+  rpc Put(KeyValue) returns (Response) {}
+  rpc Delete(Key) returns (Response) {}
+}
