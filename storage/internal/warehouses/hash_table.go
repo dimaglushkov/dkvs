@@ -1,7 +1,7 @@
 package warehouses
 
 import (
-	"github.com/dimaglushkov/dkvs/internal/storage"
+	"github.com/dimaglushkov/dkvs/storage/internal"
 	"sync"
 )
 
@@ -22,7 +22,7 @@ func (m *HashTable) Get(k string) (string, error) {
 	m.lock.RUnlock()
 
 	if !ok {
-		return "", storage.NewUnknownKeyError(k)
+		return "", internal.NewUnknownKeyError(k)
 	}
 	return res, nil
 }
@@ -41,7 +41,7 @@ func (m *HashTable) Delete(k string) error {
 	defer m.lock.Unlock()
 
 	if _, ok := m.data[k]; !ok {
-		return storage.NewUnknownKeyError(k)
+		return internal.NewUnknownKeyError(k)
 	}
 
 	delete(m.data, k)

@@ -1,13 +1,10 @@
-module github.com/dimaglushkov/dkvs/api
+module github.com/dimaglushkov/dkvs/controller
 
 go 1.18
 
-replace github.com/dimaglushkov/dkvs/api => ../api
-
-
 require (
+	github.com/dimaglushkov/dkvs/api v0.0.0-20220703194917-ff55bcd9787f
 	google.golang.org/grpc v1.47.0
-	google.golang.org/protobuf v1.28.0
 )
 
 require (
@@ -16,4 +13,5 @@ require (
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 )

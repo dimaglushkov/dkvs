@@ -1,8 +1,8 @@
 package warehouses_test
 
 import (
-	"github.com/dimaglushkov/dkvs/internal/storage"
-	"github.com/dimaglushkov/dkvs/internal/storage/warehouses"
+	"github.com/dimaglushkov/dkvs/storage/internal"
+	"github.com/dimaglushkov/dkvs/storage/internal/warehouses"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"math/rand"
@@ -45,7 +45,7 @@ func TestHashTable(t *testing.T) {
 		actual, err := ht.Get(k)
 
 		if !ok {
-			assert.IsTypef(t, err, storage.UnknownKeyError{}, "unknown error occured: %s", err)
+			assert.IsTypef(t, err, internal.UnknownKeyError{}, "unknown error occured: %s", err)
 		} else {
 			assert.NoErrorf(t, err, "unexpected error while getting the value: {%s}", k)
 		}
@@ -59,7 +59,7 @@ func TestHashTable(t *testing.T) {
 		err := ht.Delete(k)
 
 		if _, ok := m[k]; !ok {
-			assert.IsTypef(t, err, storage.UnknownKeyError{}, "unknown error occured: %s", err)
+			assert.IsTypef(t, err, internal.UnknownKeyError{}, "unknown error occured: %s", err)
 		} else {
 			assert.NoErrorf(t, err, "unexpected error while getting the value: {%s}", k)
 		}
@@ -69,7 +69,7 @@ func TestHashTable(t *testing.T) {
 	for i := 0; i < maxValue; i++ {
 		k := itoa(i)
 		_, err := ht.Get(k)
-		assert.IsTypef(t, err, storage.UnknownKeyError{}, "unknown error occured: %s", err)
+		assert.IsTypef(t, err, internal.UnknownKeyError{}, "unknown error occured: %s", err)
 	}
 
 }
