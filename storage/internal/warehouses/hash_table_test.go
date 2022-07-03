@@ -1,15 +1,17 @@
 package warehouses_test
 
 import (
-	"github.com/dimaglushkov/dkvs/storage/internal"
-	"github.com/dimaglushkov/dkvs/storage/internal/warehouses"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"math/rand"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/dimaglushkov/dkvs/storage/internal"
+	"github.com/dimaglushkov/dkvs/storage/internal/warehouses"
 )
 
 const (

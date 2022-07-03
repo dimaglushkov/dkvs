@@ -1,8 +1,9 @@
 package warehouses
 
 import (
-	"github.com/dimaglushkov/dkvs/storage/internal"
 	"sync"
+
+	"github.com/dimaglushkov/dkvs/storage/internal"
 )
 
 type HashTable struct {

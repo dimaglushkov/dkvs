@@ -1,16 +1,17 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/dimaglushkov/dkvs/api/storagepb"
-	"github.com/dimaglushkov/dkvs/storage/internal"
-	"github.com/dimaglushkov/dkvs/storage/internal/warehouses"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
 	"strconv"
+
+	"google.golang.org/grpc"
+
+	"github.com/dimaglushkov/dkvs/api/storagepb"
+	"github.com/dimaglushkov/dkvs/storage/internal"
+	"github.com/dimaglushkov/dkvs/storage/internal/warehouses"
 )
 
 func run(port int64) error {
@@ -32,16 +33,17 @@ func run(port int64) error {
 }
 
 func main() {
-	portFlag := flag.Int64("port", 0, "port number for storage to run on")
-	flag.Parse()
-
-	if *portFlag == 0 {
-		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-		flag.PrintDefaults()
-		return
+	var appPortVar = os.Getenv("APP_PORT")
+	if appPortVar == "" {
+		log.Fatal("APP_PORT env variable is missing")
 	}
 
-	if err := run(*portFlag); err != nil {
+	appPort, err := strconv.ParseInt(appPortVar, 10, 64)
+	if err != nil {
+		log.Fatal("error while parsing APP_PORT env variable")
+	}
+
+	if err := run(appPort); err != nil {
 		log.Fatal(err)
 	}
 }

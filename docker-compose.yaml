@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  storage:
+    build:
+      context: storage
+      dockerfile: Dockerfile
+    env_file:
+      - storage/.env
+    ports:
+      - "7340"
+    restart: always
