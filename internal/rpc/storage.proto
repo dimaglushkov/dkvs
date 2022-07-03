@@ -12,11 +12,9 @@ message KeyValue {
   string value = 2;
 }
 
-//TODO: think of the better format for this communication
 message Response {
-  string key = 1;
+  bool success = 1;
   string value = 2;
-  string msg = 3;
 }
 
 service Storage {

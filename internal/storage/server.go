@@ -16,32 +16,23 @@ func NewServer(w Warehouse) *Server {
 }
 
 func (s Server) Get(ctx context.Context, in *rpc.Key, opts ...grpc.CallOption) (*rpc.Response, error) {
-	var msg string
 	v, err := s.w.Get(in.Key)
 	if err != nil {
-		msg = err.Error()
+		return &rpc.Response{Success: false, Value: err.Error()}, nil
 	}
-	return &rpc.Response{Key: in.Key, Value: v, Msg: msg}, nil
+	return &rpc.Response{Success: true, Value: v}, nil
 }
 
 func (s Server) Put(ctx context.Context, in *rpc.KeyValue, opts ...grpc.CallOption) (*rpc.Response, error) {
-	var msg string
-
-	err := s.w.Put(in.Key, in.Value)
-
-	if err != nil {
-		msg = err.Error()
+	if err := s.w.Put(in.Key, in.Value); err != nil {
+		return &rpc.Response{Success: false, Value: err.Error()}, nil
 	}
-	return &rpc.Response{Key: in.Key, Value: in.Value, Msg: msg}, nil
+	return &rpc.Response{Success: true}, nil
 }
 
 func (s Server) Delete(ctx context.Context, in *rpc.Key, opts ...grpc.CallOption) (*rpc.Response, error) {
-	var msg string
-
-	err := s.w.Delete(in.Key)
-
-	if err != nil {
-		msg = err.Error()
+	if err := s.w.Delete(in.Key); err != nil {
+		return &rpc.Response{Success: false, Value: err.Error()}, nil
 	}
-	return &rpc.Response{Key: in.Key, Msg: msg}, nil
+	return &rpc.Response{Success: true}, nil
 }
