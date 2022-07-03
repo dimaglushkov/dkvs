@@ -4,7 +4,7 @@
 // 	protoc        v3.20.1
 // source: storage.proto
 
-package rpc
+package storagepb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -215,17 +215,17 @@ func file_storage_proto_rawDescGZIP() []byte {
 
 var file_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_storage_proto_goTypes = []interface{}{
-	(*Key)(nil),      // 0: rpc.Key
-	(*KeyValue)(nil), // 1: rpc.KeyValue
-	(*Response)(nil), // 2: rpc.Response
+	(*Key)(nil),      // 0: storagepb.Key
+	(*KeyValue)(nil), // 1: storagepb.KeyValue
+	(*Response)(nil), // 2: storagepb.Response
 }
 var file_storage_proto_depIdxs = []int32{
-	0, // 0: rpc.Storage.Get:input_type -> rpc.Key
-	1, // 1: rpc.Storage.Put:input_type -> rpc.KeyValue
-	0, // 2: rpc.Storage.Delete:input_type -> rpc.Key
-	2, // 3: rpc.Storage.Get:output_type -> rpc.Response
-	2, // 4: rpc.Storage.Put:output_type -> rpc.Response
-	2, // 5: rpc.Storage.Delete:output_type -> rpc.Response
+	0, // 0: storagepb.Storage.Get:input_type -> storagepb.Key
+	1, // 1: storagepb.Storage.Put:input_type -> storagepb.KeyValue
+	0, // 2: storagepb.Storage.Delete:input_type -> storagepb.Key
+	2, // 3: storagepb.Storage.Get:output_type -> storagepb.Response
+	2, // 4: storagepb.Storage.Put:output_type -> storagepb.Response
+	2, // 5: storagepb.Storage.Delete:output_type -> storagepb.Response
 	3, // [3:6] is the sub-list for method output_type
 	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
