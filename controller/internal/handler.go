@@ -144,13 +144,7 @@ func (h *handler) handleGetRequest(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := h.storages[storageId].Get(ctx, &storagepb.Key{Key: key})
 	if err != nil {
-		log.Printf("error while Getting key %s from %s storage: %s", key, storageId, err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if err = ctx.Err(); err != nil {
-		log.Printf("error in ctx of getting %s from %s storage: %s", key, storageId, err)
+		log.Printf("error while getting %s from %d storage: %s", key, storageId, err)
 		h.storages[storageId].active = false
 		h.handleGetRequest(w, r)
 		return
@@ -198,13 +192,39 @@ func (h *handler) handlePutRequest(w http.ResponseWriter, r *http.Request) {
 
 		resp, err := h.storages[storageId].Put(ctx, &storagepb.KeyValue{Key: kv.Key, Value: kv.Val})
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("error while Getting key %s from %s storage: %s", kv.Key, storageId, err)
-			return
+			log.Printf("error while putting {%s:%s} to %d storage: %s", kv.Key, kv.Val, storageId, err)
+			h.storages[storageId].active = false
 		}
 
-		if err = ctx.Err(); err != nil {
-			log.Printf("error in ctx of getting %s from %s storage: %s", kv.Key, storageId, err)
+		if resp.Success {
+			status = true
+		}
+	}
+
+	if status {
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+}
+
+func (h *handler) handleDeleteRequest(w http.ResponseWriter, r *http.Request) {
+	key := r.RequestURI[1:]
+	if key == "" || len(key) > maxKeyLen {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ts := h.findTargetStorages(key)
+	var status bool
+
+	for _, storageId := range ts {
+		ctx := context.Background()
+
+		resp, err := h.storages[storageId].Delete(ctx, &storagepb.Key{Key: key})
+		if err != nil {
+			log.Printf("error while deleting %s from %d storage: %s", key, storageId, err)
 			h.storages[storageId].active = false
 		}
 		if resp.Success {
@@ -215,11 +235,6 @@ func (h *handler) handlePutRequest(w http.ResponseWriter, r *http.Request) {
 	if status {
 		w.WriteHeader(http.StatusOK)
 	} else {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 	}
-
-}
-
-func (h *handler) handleDeleteRequest(w http.ResponseWriter, r *http.Request) {
-
 }
