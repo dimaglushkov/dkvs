@@ -9,3 +9,13 @@ services:
       - storage/.env
     ports:
       - "7340"
+
+  controller:
+    build:
+      context: controller
+      dockerfile: Dockerfile
+    env_file:
+      - controller/.env
+    ports:
+      - "7341:7341"
+    restart: always

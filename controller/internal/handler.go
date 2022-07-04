@@ -13,13 +13,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// прилюбом запросе проверяю жив ли чувачок
-// пут и делит делаю в избранный + все репликанты
-// гет делаю раунд робин
-// в целом всё )
-
-// добавить таймауты
-
 const (
 	maxKeyLen = 50
 	maxValLen = 100
@@ -46,26 +39,26 @@ type handler struct {
 }
 
 func NewHandler(storageLocs []string, rf int) *handler {
-	//replace insecure.NewCredentials() with the proper authentication
-	grpcConnector := func(addr string) (*grpc.ClientConn, error) {
-		var conn *grpc.ClientConn
-		conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-
-		if err != nil {
-			return nil, err
-		}
-		return conn, nil
-	}
-
 	h := handler{}
 
-	h.storages = make([]storageClient, len(storageLocs))
-	for i, sl := range storageLocs {
-		conn, err := grpcConnector(sl)
+	// initializing grpc connections
+	h.storages = make([]storageClient, 0, len(storageLocs))
+	for _, sl := range storageLocs {
+
+		//todo: add proper authentication instead of insecure.NewCredentials()
+		conn, err := grpc.Dial(sl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
-			log.Fatalf("error while establishing grpc connection with %s: %s", sl, err)
+			log.Fatalf("error while establishing gRPC connection with %s: %s", sl, err)
 		}
-		h.storages[i] = storageClient{storagepb.NewStorageClient(conn), true}
+		client := storagepb.NewStorageClient(conn)
+
+		// checking if this connection actually works
+		_, err = client.Get(context.Background(), &storagepb.Key{Key: "1"})
+		if err != nil {
+			log.Printf("error while initially checking connection storage at %s: %s", sl, err)
+			continue
+		}
+		h.storages = append(h.storages, storageClient{client, true})
 	}
 
 	h.replicaFactor = rf
@@ -124,7 +117,7 @@ func (h *handler) findTargetStorages(key string) []int {
 	// for the nodes that went down or by introducing shard layer for the application and making sure every shard
 	// is replicated enough times
 	if len(targetIds) == 0 {
-		log.Fatalf("too many nodes went down which led to the data loss")
+		log.Fatalf("too many nodes went down")
 	}
 
 	return targetIds
