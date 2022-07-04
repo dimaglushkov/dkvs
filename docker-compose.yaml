@@ -9,4 +9,3 @@ services:
       - storage/.env
     ports:
       - "7340"
-    restart: always

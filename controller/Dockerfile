@@ -1,12 +1,9 @@
 FROM golang:1.18.3-buster
 
-WORKDIR /go/src/github.com/dimaglushkov/dkvs/controller
+WORKDIR /app
 
-COPY ../cmd/controller .
-
-# Copy the source from the current directory to the Working Directory inside the container
-COPY ../cmd/controller .
-
+COPY . .
+RUN go mod download
 RUN go build -o main .
 
 CMD ["./main"]
